@@ -152,7 +152,7 @@ this["rl_components"] =
 /* 4 */
 /***/ function(module, exports) {
 
-	(function() { module.exports = this["rl.utilities"]; }());
+	(function() { module.exports = this["rl_utilities"]; }());
 
 /***/ },
 /* 5 */
