@@ -1,4 +1,4 @@
-this["rl-components"] =
+this["rl_components"] =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
