@@ -1,0 +1,28 @@
+{
+  "name": "typescript-angular-components",
+  "version": "1.0.0",
+  "authors": [
+    "Josh Graber <jgraber@renovo1.com>",
+	"Sam Graber <sgraber@renovo1.com>"
+  ],
+  "description": "Reusable responsive angular components",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "components",
+    "angular",
+    "responsive"
+  ],
+  "dependencies": {
+    "angular": "^1.4.6",
+    "angular-ui-bootstrap": "^0.13.4",
+    "jquery": "^2.1.4",
+    "lodash": "^3.10.1",
+    "moment": "^2.10.6",
+    "signature_pad": "~1.4.0",
+    "textangular": "~1.4.6",
+    "typescript-angular-utilities": "~2.1.0"
+  },
+  "license": "GPL-3.0"
+}
