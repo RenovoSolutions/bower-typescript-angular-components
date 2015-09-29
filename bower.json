@@ -9,6 +9,7 @@
   "moduleType": [
     "globals"
   ],
+  "main": "ui.module.js",
   "keywords": [
     "components",
     "angular",
