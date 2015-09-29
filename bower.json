@@ -10,6 +10,10 @@
     "globals"
   ],
   "main": "ui.module.js",
+  "ignore": [
+    "node_modules",
+    "libraries"
+  ],
   "keywords": [
     "components",
     "angular",
