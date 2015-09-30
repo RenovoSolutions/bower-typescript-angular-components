@@ -51,7 +51,7 @@ this["rl_components"] =
 	exports.behaviors = behaviors;
 	var components = __webpack_require__(5);
 	exports.components = components;
-	var services = __webpack_require__(88);
+	var services = __webpack_require__(89);
 	exports.services = services;
 	exports.moduleName = 'rl.ui';
 	angular.module(exports.moduleName, [
@@ -170,37 +170,37 @@ this["rl_components"] =
 	exports.buttonToggle = buttonToggle;
 	var cardContainer = __webpack_require__(14);
 	exports.cardContainer = cardContainer;
-	var commaList = __webpack_require__(58);
+	var commaList = __webpack_require__(59);
 	exports.commaList = commaList;
-	var dateTime = __webpack_require__(59);
+	var dateTime = __webpack_require__(60);
 	exports.dateTime = dateTime;
-	var genericContainer = __webpack_require__(61);
+	var genericContainer = __webpack_require__(62);
 	exports.genericContainer = genericContainer;
-	var lazyLoad = __webpack_require__(63);
+	var lazyLoad = __webpack_require__(64);
 	exports.lazyLoad = lazyLoad;
-	var longClickButton = __webpack_require__(64);
+	var longClickButton = __webpack_require__(65);
 	exports.longClickButton = longClickButton;
-	var messageLog = __webpack_require__(65);
+	var messageLog = __webpack_require__(66);
 	exports.messageLog = messageLog;
-	var multiStepIndicator = __webpack_require__(68);
+	var multiStepIndicator = __webpack_require__(69);
 	exports.multiStepIndicator = multiStepIndicator;
-	var ratingBar = __webpack_require__(69);
+	var ratingBar = __webpack_require__(70);
 	exports.ratingBar = ratingBar;
-	var responsiveCardGrid = __webpack_require__(72);
+	var responsiveCardGrid = __webpack_require__(73);
 	exports.responsiveCardGrid = responsiveCardGrid;
-	var richTextEditor = __webpack_require__(79);
+	var richTextEditor = __webpack_require__(80);
 	exports.richTextEditor = richTextEditor;
-	var signaturePad = __webpack_require__(80);
+	var signaturePad = __webpack_require__(81);
 	exports.signaturePad = signaturePad;
-	var simpleCardList = __webpack_require__(81);
+	var simpleCardList = __webpack_require__(82);
 	exports.simpleCardList = simpleCardList;
-	var spinner = __webpack_require__(84);
+	var spinner = __webpack_require__(85);
 	exports.spinner = spinner;
-	var stringWithWatermark = __webpack_require__(85);
+	var stringWithWatermark = __webpack_require__(86);
 	exports.stringWithWatermark = stringWithWatermark;
-	var typeahead = __webpack_require__(86);
+	var typeahead = __webpack_require__(87);
 	exports.typeahead = typeahead;
-	var userRating = __webpack_require__(87);
+	var userRating = __webpack_require__(88);
 	exports.userRating = userRating;
 	exports.moduleName = 'rl.ui.components';
 	angular.module(exports.moduleName, [
@@ -442,21 +442,21 @@ this["rl_components"] =
 	exports.columnHeader = columnHeader;
 	var dataSources = __webpack_require__(25);
 	exports.dataSources = dataSources;
-	var filters = __webpack_require__(36);
+	var filters = __webpack_require__(37);
 	exports.filters = filters;
-	var itemCount = __webpack_require__(46);
+	var itemCount = __webpack_require__(47);
 	exports.itemCount = itemCount;
-	var pager = __webpack_require__(47);
+	var pager = __webpack_require__(48);
 	exports.pager = pager;
-	var pageSize = __webpack_require__(49);
+	var pageSize = __webpack_require__(50);
 	exports.pageSize = pageSize;
-	var selectionControl = __webpack_require__(51);
+	var selectionControl = __webpack_require__(52);
 	exports.selectionControl = selectionControl;
 	var sorts = __webpack_require__(26);
 	exports.sorts = sorts;
-	var cardContainer_1 = __webpack_require__(53);
-	__export(__webpack_require__(53));
-	__export(__webpack_require__(57));
+	var cardContainer_1 = __webpack_require__(54);
+	__export(__webpack_require__(54));
+	__export(__webpack_require__(58));
 	exports.moduleName = 'rl.ui.components.cardContainer';
 	angular.module(exports.moduleName, [
 	    // dependencies
@@ -965,11 +965,13 @@ this["rl_components"] =
 	exports.dataServiceDataSource = dataServiceDataSource;
 	var simpleDataSource = __webpack_require__(34);
 	exports.simpleDataSource = simpleDataSource;
+	var serverSearchDataSource = __webpack_require__(35);
+	exports.serverSearchDataSource = serverSearchDataSource;
 	var dataSourceProcessor = __webpack_require__(33);
 	exports.dataSourceProcessor = dataSourceProcessor;
 	var dataSourceBase = __webpack_require__(32);
 	exports.dataSourceBase = dataSourceBase;
-	__export(__webpack_require__(35));
+	__export(__webpack_require__(36));
 	exports.moduleName = 'rl.ui.components.cardContainer.dataSources';
 	angular.module(exports.moduleName, [
 	    typescript_angular_utilities_1.services.object.moduleName,
@@ -977,6 +979,7 @@ this["rl_components"] =
 	    dataPager.moduleName,
 	    dataServiceDataSource.moduleName,
 	    simpleDataSource.moduleName,
+	    serverSearchDataSource.moduleName,
 	])
 	    .service(dataSourceProcessor.processorServiceName, dataSourceProcessor.DataSourceProcessor);
 	//# sourceMappingURL=dataSources.module.js.map
@@ -1238,7 +1241,6 @@ this["rl_components"] =
 	'use strict';
 	var DataSourceBase = (function () {
 	    function DataSourceBase(observableFactory, dataSourceProcessor, array) {
-	        var _this = this;
 	        this.dataSourceProcessor = dataSourceProcessor;
 	        this.array = array;
 	        this.sorts = [];
@@ -1246,12 +1248,6 @@ this["rl_components"] =
 	        this.count = 0;
 	        this.countFilterGroups = false;
 	        this.loadingDataSet = false;
-	        this.refresh = function () {
-	            if (!_this.loadingDataSet) {
-	                _this.processData();
-	                _this.observable.fire('redrawing');
-	            }
-	        };
 	        this.observable = observableFactory.getInstance();
 	    }
 	    DataSourceBase.prototype.watch = function (action, event) {
@@ -1268,6 +1264,12 @@ this["rl_components"] =
 	        this.count = processedData.count;
 	        this.dataSet = processedData.dataSet;
 	        this.filteredDataSet = processedData.filteredDataSet;
+	    };
+	    DataSourceBase.prototype.refresh = function () {
+	        if (!this.loadingDataSet) {
+	            this.processData();
+	            this.observable.fire('redrawing');
+	        }
 	    };
 	    DataSourceBase.prototype.remove = function (data) {
 	        var item = this.array.remove(this.rawDataSet, data);
@@ -1444,20 +1446,97 @@ this["rl_components"] =
 
 /***/ },
 /* 35 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var angular = __webpack_require__(1);
+	var typescript_angular_utilities_1 = __webpack_require__(4);
+	var __observable = typescript_angular_utilities_1.services.observable;
+	var __array = typescript_angular_utilities_1.services.array;
+	var __object = typescript_angular_utilities_1.services.object;
+	var dataSourceBase_service_1 = __webpack_require__(32);
+	var dataSourceProcessor_service_1 = __webpack_require__(33);
+	exports.moduleName = 'rl.ui.components.cardContainer.dataSources.serverSearchDataSource';
+	exports.factoryName = 'serverSearchDataSource';
+	var ServerSearchDataSource = (function (_super) {
+	    __extends(ServerSearchDataSource, _super);
+	    function ServerSearchDataSource(getDataSet, searchFilter, observableFactory, dataSourceProcessor, array, object, $q) {
+	        var _this = this;
+	        _super.call(this, observableFactory, dataSourceProcessor, array);
+	        this.getDataSet = getDataSet;
+	        this.searchFilter = searchFilter;
+	        this.object = object;
+	        this.$q = $q;
+	        this.minSearchLength = 4;
+	        this.resolveReload = function (data) {
+	            _this.loadingDataSet = false;
+	            _this.rawDataSet = data;
+	            _this.refresh();
+	            _this.observable.fire('reloaded');
+	            _this.observable.fire('changed');
+	        };
+	        this.countFilterGroups = true;
+	        this.search = searchFilter.searchText;
+	        searchFilter.minSearchLength = this.minSearchLength;
+	    }
+	    ServerSearchDataSource.prototype.refresh = function () {
+	        if (this.searchFilter.searchText !== this.search) {
+	            this.reload();
+	        }
+	        else {
+	            _super.prototype.refresh.call(this);
+	        }
+	    };
+	    ServerSearchDataSource.prototype.reload = function () {
+	        this.search = this.searchFilter.searchText;
+	        if (this.object.isNullOrEmpty(this.searchFilter.searchText)
+	            || this.searchFilter.searchText.length < this.minSearchLength) {
+	            this.resolveReload(null);
+	            return;
+	        }
+	        this.dataSet = null;
+	        this.rawDataSet = null;
+	        this.loadingDataSet = true;
+	        this.$q.when(this.getDataSet(this.search)).then(this.resolveReload);
+	    };
+	    return ServerSearchDataSource;
+	})(dataSourceBase_service_1.DataSourceBase);
+	exports.ServerSearchDataSource = ServerSearchDataSource;
+	serverSearchDataSourceFactory.$inject = [__observable.factoryName, dataSourceProcessor_service_1.processorServiceName, __array.serviceName, __object.serviceName, '$q'];
+	function serverSearchDataSourceFactory(observableFactory, dataSourceProcessor, array, object, $q) {
+	    'use strict';
+	    return {
+	        getInstance: function (getDataSet, searchFilter) {
+	            return new ServerSearchDataSource(getDataSet, searchFilter, observableFactory, dataSourceProcessor, array, object, $q);
+	        },
+	    };
+	}
+	exports.serverSearchDataSourceFactory = serverSearchDataSourceFactory;
+	angular.module(exports.moduleName, [__observable.moduleName, __array.moduleName, __object.moduleName])
+	    .factory(exports.factoryName, serverSearchDataSourceFactory);
+	//# sourceMappingURL=serverSearchDataSource.service.js.map
+
+/***/ },
+/* 36 */
 /***/ function(module, exports) {
 
 	'use strict';
 	//# sourceMappingURL=dataSource.js.map
 
 /***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var angular = __webpack_require__(1);
-	var columnSearchFilter = __webpack_require__(37);
+	var columnSearchFilter = __webpack_require__(38);
 	exports.columnSearchFilter = columnSearchFilter;
-	var filterGroup = __webpack_require__(38);
+	var filterGroup = __webpack_require__(39);
 	exports.filterGroup = filterGroup;
 	exports.moduleName = 'rl.ui.components.cardContainer.filters';
 	angular.module(exports.moduleName, [
@@ -1467,7 +1546,7 @@ this["rl_components"] =
 	//# sourceMappingURL=filters.module.js.map
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1514,7 +1593,7 @@ this["rl_components"] =
 	//# sourceMappingURL=columnSearchFilter.service.js.map
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1523,16 +1602,16 @@ this["rl_components"] =
 	}
 	var angular = __webpack_require__(1);
 	var typescript_angular_utilities_1 = __webpack_require__(4);
-	var filterOption = __webpack_require__(39);
+	var filterOption = __webpack_require__(40);
 	exports.filterOption = filterOption;
-	var modeFilterGroup = __webpack_require__(41);
+	var modeFilterGroup = __webpack_require__(42);
 	exports.modeFilterGroup = modeFilterGroup;
-	var rangeFilterGroup = __webpack_require__(43);
+	var rangeFilterGroup = __webpack_require__(44);
 	exports.rangeFilterGroup = rangeFilterGroup;
-	var filterGroup_service_1 = __webpack_require__(42);
-	var filterGroup_directive_1 = __webpack_require__(44);
-	__export(__webpack_require__(44));
-	__export(__webpack_require__(42));
+	var filterGroup_service_1 = __webpack_require__(43);
+	var filterGroup_directive_1 = __webpack_require__(45);
+	__export(__webpack_require__(45));
+	__export(__webpack_require__(43));
 	exports.moduleName = 'rl.ui.components.cardContainer.filters.filterGroup';
 	angular.module(exports.moduleName, [
 	    typescript_angular_utilities_1.services.object.moduleName,
@@ -1546,7 +1625,7 @@ this["rl_components"] =
 	//# sourceMappingURL=filterGroup.module.js.map
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// /// <reference path='../../../../../../typings/commonjs.d.ts' />
@@ -1558,7 +1637,7 @@ this["rl_components"] =
 	    'use strict';
 	    return {
 	        restrict: 'E',
-	        template: __webpack_require__(40),
+	        template: __webpack_require__(41),
 	        scope: {
 	            activate: '&',
 	            isActive: '=active',
@@ -1572,13 +1651,13 @@ this["rl_components"] =
 	//# sourceMappingURL=filterOption.js.map
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"row filter-option\" ng-class=\"{ 'active': isActive }\" ng-click=\"activate()\">\r\n\t<div class=\"col-sm-1\">\r\n\t\t<i class='fa fa-arrow-right' ng-show=\"isActive == true\"></i>\r\n\t</div>\r\n\t<div class=\"col-sm-1\" ng-if=\"hasIcon\" ng-bind-html=\"option.icon\"></div>\r\n\t<div ng-class=\"{ 'col-sm-6': hasIcon, 'col-sm-7': !hasIcon }\">\r\n\t\t{{option.label}}\r\n\t</div>\r\n\t<div class=\"col-sm-3 text-right\" ng-show=\"option.count != null\">\r\n\t\t({{option.count}})\r\n\t</div>\r\n</div>"
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1591,7 +1670,7 @@ this["rl_components"] =
 	var _ = __webpack_require__(10);
 	var typescript_angular_utilities_1 = __webpack_require__(4);
 	var __object = typescript_angular_utilities_1.services.object;
-	var filterGroup_service_1 = __webpack_require__(42);
+	var filterGroup_service_1 = __webpack_require__(43);
 	exports.moduleName = 'rl.ui.components.cardContainer.filters.filterGroup.modeFilterGroup';
 	exports.factoryName = 'modeFilterGroup';
 	var ModeFilterGroup = (function (_super) {
@@ -1630,7 +1709,7 @@ this["rl_components"] =
 	//# sourceMappingURL=modeFilterGroup.service.js.map
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1687,7 +1766,7 @@ this["rl_components"] =
 	//# sourceMappingURL=filterGroup.service.js.map
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1700,7 +1779,7 @@ this["rl_components"] =
 	var _ = __webpack_require__(10);
 	var typescript_angular_utilities_1 = __webpack_require__(4);
 	var __object = typescript_angular_utilities_1.services.object;
-	var filterGroup_service_1 = __webpack_require__(42);
+	var filterGroup_service_1 = __webpack_require__(43);
 	exports.moduleName = 'rl.ui.components.cardContainer.filters.filterGroup.rangeFilterGroup';
 	exports.factoryName = 'rangeFilterGroup';
 	var RangeFilterGroup = (function (_super) {
@@ -1749,7 +1828,7 @@ this["rl_components"] =
 	//# sourceMappingURL=rangeFilterGroup.service.js.map
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// /// <reference path='../../../../../typings/commonjs.d.ts' />
@@ -1783,7 +1862,7 @@ this["rl_components"] =
 	    'use strict';
 	    return {
 	        restrict: 'E',
-	        template: __webpack_require__(45),
+	        template: __webpack_require__(46),
 	        controller: exports.controllerName,
 	        controllerAs: 'controller',
 	        scope: {},
@@ -1798,13 +1877,13 @@ this["rl_components"] =
 	//# sourceMappingURL=filterGroup.directive.js.map
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"filter-group\">\r\n\t<div class=\"row filter-header\" ng-click=\"controller.toggleChildren()\">\r\n\t\t<div class=\"col-sm-12\">\r\n\t\t\t<i class=\"collapse-icon fa fa-caret-down fa-2x\" ng-show=\"controller.showChildren\" title=\"Hide filter list\"></i>\r\n\t\t\t<i class=\"collapse-icon fa fa-caret-right fa-2x\" ng-hide=\"controller.showChildren\" title=\"Show filter list\"></i>\r\n\t\t\t<div class=\"filter-option\">\r\n\t\t\t\t<div style=\"display:inline-block\" ng-show=\"controller.hasIcon\" ng-bind-html=\"controller.icon\"></div>\r\n\t\t\t\t<h4 style=\"display: inline-block\">{{controller.filterGroup.label}}: {{controller.filterGroup.activeOption.label}}</h4>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t</div>\r\n\t<div ng-show=\"controller.showChildren\" ng-repeat=\"filterOption in controller.filterGroup.options\">\r\n\t\t<rl-filter-option option=\"filterOption\" active=\"filterGroup.activeOption === filterOption\" activate=\"controller.selectOption(filterOption)\"></rl-filter-option>\r\n\t</div>\r\n</div>\r\n"
 
 /***/ },
-/* 46 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1829,7 +1908,7 @@ this["rl_components"] =
 	//# sourceMappingURL=itemCount.js.map
 
 /***/ },
-/* 47 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// /// <reference path='../../../../typings/commonjs.d.ts' />
@@ -1922,7 +2001,7 @@ this["rl_components"] =
 	    return {
 	        restrict: 'E',
 	        require: '^^rlCardContainer',
-	        template: __webpack_require__(48),
+	        template: __webpack_require__(49),
 	        scope: {},
 	        bindToController: {
 	            pageCount: '=visiblePages',
@@ -1936,13 +2015,13 @@ this["rl_components"] =
 	//# sourceMappingURL=pager.js.map
 
 /***/ },
-/* 48 */
+/* 49 */
 /***/ function(module, exports) {
 
 	module.exports = "<nav ng-if=\"pager.hasPageFilter\">\r\n\t<ul class=\"pagination\">\r\n\t\t<li title=\"Go to first page\" ng-click=\"pager.first()\"\r\n\t\t\tng-class=\"{ 'disabled': !pager.canGoBack }\">\r\n\t\t\t<a><i class=\"fa fa-angle-double-left\"></i></a>\r\n\t\t</li>\r\n\t\t<li title=\"Go to previous page\" ng-click=\"pager.previous()\"\r\n\t\t\tng-class=\"{ 'disabled': !pager.canGoBack }\">\r\n\t\t\t<a><i class=\"fa fa-angle-left\"></i></a>\r\n\t\t</li>\r\n\t\t<li title=\"Go to page {{pager.page}}\" ng-click=\"pager.goto(page)\"\r\n\t\t\tng-repeat=\"page in pager.pages\"\r\n\t\t\tng-class=\"{ 'active': pager.currentPage == page }\">\r\n\t\t\t<a>{{page}}</a>\r\n\t\t</li>\r\n\t\t<li title=\"Go to next page\" ng-click=\"pager.next()\"\r\n\t\t\tng-class=\"{ 'disabled': !pager.canGoForward }\">\r\n\t\t\t<a><i class=\"fa fa-angle-right\"></i></a>\r\n\t\t</li>\r\n\t\t<li title=\"Go to last page\" ng-click=\"pager.last()\"\r\n\t\t\tng-class=\"{ 'disabled': !pager.canGoForward }\">\r\n\t\t\t<a><i class=\"fa fa-angle-double-right\"></i></a>\r\n\t\t</li>\r\n\t</ul>\r\n</nav>\r\n"
 
 /***/ },
-/* 49 */
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// /// <reference path='../../../../typings/commonjs.d.ts' />
@@ -1982,7 +2061,7 @@ this["rl_components"] =
 	    return {
 	        restrict: 'E',
 	        require: '^^rlCardContainer',
-	        template: __webpack_require__(50),
+	        template: __webpack_require__(51),
 	        controller: exports.controllerName,
 	        controllerAs: 'controller',
 	    };
@@ -1994,13 +2073,13 @@ this["rl_components"] =
 	//# sourceMappingURL=pageSize.js.map
 
 /***/ },
-/* 50 */
+/* 51 */
 /***/ function(module, exports) {
 
 	module.exports = "<div ng-show=\"controller.hasPageFilter\">\r\n\t<select class=\"form-control\" title=\"Cards per page\" ng-model=\"controller.selectedPageSize\"\r\n\t\t\tng-options=\"pageSize for pageSize in controller.pageSizes\"></select>\r\n</div>\r\n"
 
 /***/ },
-/* 51 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// /// <reference path='../../../../typings/commonjs.d.ts' />
@@ -2057,7 +2136,7 @@ this["rl_components"] =
 	    return {
 	        restrict: 'E',
 	        require: '^^rlCardContainer',
-	        template: __webpack_require__(52),
+	        template: __webpack_require__(53),
 	        controller: exports.controllerName,
 	        controllerAs: 'selection',
 	    };
@@ -2069,13 +2148,13 @@ this["rl_components"] =
 	//# sourceMappingURL=selectionControl.js.map
 
 /***/ },
-/* 52 */
+/* 53 */
 /***/ function(module, exports) {
 
 	module.exports = "<div>\r\n\t<div style=\"margin-bottom: 5px\">\r\n\t\t<span><strong>{{selection.selectedItems}}</strong> items selected</span>\r\n\t</div>\r\n\t<div style=\"margin-bottom: 5px\" ng-if=\"selection.pagingEnabled\">\r\n\t\t<button type=\"button\" class=\"btn btn-default\" ng-click=\"selection.selectPage()\">Select page</button>\r\n\t\t<button type=\"button\" class=\"btn btn-default\" ng-click=\"selection.clearPage()\">Clear page</button>\r\n\t</div>\r\n\t<div>\r\n\t\t<button type=\"button\" class=\"btn btn-default\" ng-click=\"selection.selectAll()\">Select all</button>\r\n\t\t<button type=\"button\" class=\"btn btn-default\" ng-click=\"selection.clearAll()\">Clear all</button>\r\n\t</div>\r\n</div>\r\n"
 
 /***/ },
-/* 53 */
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// /// <reference path='../../../typings/commonjs.d.ts' />
@@ -2323,7 +2402,7 @@ this["rl_components"] =
 	    return {
 	        restrict: 'E',
 	        transclude: true,
-	        template: __webpack_require__(54),
+	        template: __webpack_require__(55),
 	        controller: exports.controllerName,
 	        controllerAs: 'cardContainer',
 	        scope: {},
@@ -2427,13 +2506,13 @@ this["rl_components"] =
 	            transclude(scope, function (clone) {
 	                var header = clone.filter('container-header');
 	                if (header.length === 0) {
-	                    var defaultHeader = __webpack_require__(55);
+	                    var defaultHeader = __webpack_require__(56);
 	                    header = $compile(defaultHeader)(scope);
 	                }
 	                headerArea.append(header);
 	                var footer = clone.filter('container-footer');
 	                if (footer.length === 0) {
-	                    var defaultFooter = __webpack_require__(56);
+	                    var defaultFooter = __webpack_require__(57);
 	                    footer = $compile(defaultFooter)(scope);
 	                }
 	                footerArea.append(footer);
@@ -2445,32 +2524,32 @@ this["rl_components"] =
 	//# sourceMappingURL=cardContainer.js.map
 
 /***/ },
-/* 54 */
+/* 55 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"card-container\">\r\n\t<div>\r\n\t\t<div class=\"card-container-header\">\r\n\t\t\t<div class=\"container-header-template\"></div>\r\n\t\t</div>\r\n\r\n\t\t<rl-generic-container selector=\"cardContainer.selectableCards\">\r\n\t\t\t<template when-selector=\"false\" default>\r\n\t\t\t\t<div class=\"card-columns-header\">\r\n\t\t\t\t\t<div ng-repeat=\"column in cardContainer.columns\">\r\n\t\t\t\t\t\t<rl-column-header sort=\"cardContainer.sort(column)\" sorting=\"column.sortDirection\" column=\"column\"></rl-column-header>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<div class=\"clearfix\"></div>\r\n\t\t\t\t</div>\r\n\t\t\t</template>\r\n\t\t\t<template when-selector=\"true\">\r\n\t\t\t\t<div class=\"card-columns-header\">\r\n\t\t\t\t\t<div class=\"select-group\">\r\n\t\t\t\t\t\t<div class=\"select-column\">\r\n\t\t\t\t\t\t\t<i class=\"fa fa-check\" style=\"margin-left: 6px; cursor: pointer\" ng-click=\"cardContainer.sortSelected()\"></i>\r\n\t\t\t\t\t\t\t<i ng-show=\"cardContainer.sortColumn.sortDirection === cardContainer.sortDirection.ascending\" class=\"fa fa-sort-asc\"></i>\r\n\t\t\t\t\t\t\t<i ng-show=\"cardContainer.sortColumn.sortDirection === cardContainer.sortDirection.descending\" class=\"fa fa-sort-desc\"></i>\r\n\t\t\t\t\t\t</div>\r\n\t\t\t\t\t\t<div class=\"select-content\">\r\n\t\t\t\t\t\t\t<div ng-repeat=\"column in cardContainer.columns\">\r\n\t\t\t\t\t\t\t\t<rl-column-header sort=\"cardContainer.sort(column)\" sorting=\"column.sortDirection\" column=\"column\"></rl-column-header>\r\n\t\t\t\t\t\t\t</div>\r\n\t\t\t\t\t\t</div>\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<div class=\"clearfix\"></div>\r\n\t\t\t\t</div>\r\n\t\t\t</template>\r\n\t\t</rl-generic-container>\r\n\r\n\t\t<div ng-repeat=\"card in cardContainer.dataSource.dataSet\">\r\n\t\t\t<rl-card columns=\"cardContainer.columns\" item=\"card\"\r\n\t\t\t\t\t clickable=\"cardContainer.clickableCards\"\r\n\t\t\t\t\t selectable=\"cardContainer.selectableCards\"\r\n\t\t\t\t\t selection-changed=\"cardContainer.selectionChanged()\"\r\n\t\t\t\t\t container-data=\"cardContainer.containerData\"\r\n\t\t\t\t\t source=\"cardContainer.dataSource\"\r\n\t\t\t\t\t permanent-footer=\"cardContainer.permanentFooters\"\r\n\t\t\t\t\t card-controller=\"cardContainer.cardController\"\r\n\t\t\t\t\t card-controller-as=\"cardContainer.cardControllerAs\"\r\n\t\t\t\t\t card-as=\"cardContainer.cardAs\"></rl-card>\r\n\t\t</div>\r\n\r\n\t\t<div>\r\n\t\t\t<rl-busy loading=\"cardContainer.dataSource.loadingDataSet\" size=\"2x\"></rl-busy>\r\n\t\t</div>\r\n\r\n\t\t<div class=\"card-container-footer\">\r\n\t\t\t<div class=\"container-footer-template\"></div>\r\n\t\t</div>\r\n\t</div>\r\n</div>"
 
 /***/ },
-/* 55 */
+/* 56 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"row\">\r\n\t<div class=\"col-sm-9\">\r\n\t\t<rl-card-search></rl-card-search>\r\n\t</div>\r\n\t<div class=\"col-sm-3\">\r\n\t\t<rl-page-size></rl-page-size>\r\n\t</div>\r\n</div>\r\n"
 
 /***/ },
-/* 56 */
+/* 57 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"row\">\r\n\t<div ng-if=\"!cardContainer.selectableCards\" class=\"col-sm-6\">\r\n\t\t<rl-item-count></rl-item-count>\r\n\t</div>\r\n\t<span ng-if=\"cardContainer.selectableCards\">\r\n\t\t<div class=\"col-sm-3\">\r\n\t\t\t<rl-selection-control></rl-selection-control>\r\n\t\t</div>\r\n\t\t<div class=\"col-sm-3\">\r\n\t\t\t<rl-item-count></rl-item-count>\r\n\t\t</div>\r\n\t</span>\r\n\t<div class=\"col-sm-6\">\r\n\t\t<rl-pager class=\"pull-right\"></rl-pager>\r\n\t</div>\r\n</div>\r\n"
 
 /***/ },
-/* 57 */
+/* 58 */
 /***/ function(module, exports) {
 
 	'use strict';
 	//# sourceMappingURL=column.js.map
 
 /***/ },
-/* 58 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2530,13 +2609,13 @@ this["rl_components"] =
 	//# sourceMappingURL=commaList.js.map
 
 /***/ },
-/* 59 */
+/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	// /// <reference path='../../../typings/bootstrapDateTimePicker.d.ts' />
 	var angular = __webpack_require__(1);
-	var $ = __webpack_require__(60);
+	var $ = __webpack_require__(61);
 	var typescript_angular_utilities_1 = __webpack_require__(4);
 	exports.moduleName = 'rl.ui.components.dateTime';
 	exports.directiveName = 'rlDateTime';
@@ -2606,20 +2685,20 @@ this["rl_components"] =
 	//# sourceMappingURL=dateTime.js.map
 
 /***/ },
-/* 60 */
+/* 61 */
 /***/ function(module, exports) {
 
 	(function() { module.exports = this["$"]; }());
 
 /***/ },
-/* 61 */
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var angular = __webpack_require__(1);
 	var _ = __webpack_require__(10);
 	var typescript_angular_utilities_1 = __webpack_require__(4);
-	var jquery_service_1 = __webpack_require__(62);
+	var jquery_service_1 = __webpack_require__(63);
 	exports.moduleName = 'rl.ui.components.genericContainer';
 	exports.directiveName = 'rlGenericContainer';
 	exports.controllerName = 'GenericContainerController';
@@ -2724,7 +2803,7 @@ this["rl_components"] =
 	//# sourceMappingURL=genericContainer.js.map
 
 /***/ },
-/* 62 */
+/* 63 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// /// <reference path="../../../typings/jquery/jquery.d.ts" />
@@ -2746,7 +2825,7 @@ this["rl_components"] =
 	//# sourceMappingURL=jquery.service.js.map
 
 /***/ },
-/* 63 */
+/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2789,12 +2868,12 @@ this["rl_components"] =
 	//# sourceMappingURL=lazyLoad.js.map
 
 /***/ },
-/* 64 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var angular = __webpack_require__(1);
-	var $ = __webpack_require__(60);
+	var $ = __webpack_require__(61);
 	var typescript_angular_utilities_1 = __webpack_require__(4);
 	exports.moduleName = 'rl.ui.components.longClickButton';
 	exports.directiveName = 'rlLongClickButton';
@@ -2884,7 +2963,7 @@ this["rl_components"] =
 	//# sourceMappingURL=longClickButton.js.map
 
 /***/ },
-/* 65 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2892,10 +2971,10 @@ this["rl_components"] =
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
 	var angular = __webpack_require__(1);
-	var messageLog_service_1 = __webpack_require__(66);
-	var messageLog_directive_1 = __webpack_require__(67);
-	__export(__webpack_require__(66));
+	var messageLog_service_1 = __webpack_require__(67);
+	var messageLog_directive_1 = __webpack_require__(68);
 	__export(__webpack_require__(67));
+	__export(__webpack_require__(68));
 	exports.moduleName = 'rl.ui.components.messageLog';
 	angular.module(exports.moduleName, [])
 	    .factory(messageLog_service_1.factoryName, messageLog_service_1.messageLogFactory)
@@ -2904,7 +2983,7 @@ this["rl_components"] =
 	//# sourceMappingURL=messageLog.module.js.map
 
 /***/ },
-/* 66 */
+/* 67 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3017,11 +3096,11 @@ this["rl_components"] =
 	//# sourceMappingURL=messageLog.service.js.map
 
 /***/ },
-/* 67 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var messageLog_service_1 = __webpack_require__(66);
+	var messageLog_service_1 = __webpack_require__(67);
 	exports.directiveName = 'rlMessageLog';
 	exports.controllerName = 'MessageLogController';
 	var MessageLogController = (function () {
@@ -3079,7 +3158,7 @@ this["rl_components"] =
 	//# sourceMappingURL=messageLog.directive.js.map
 
 /***/ },
-/* 68 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3147,13 +3226,13 @@ this["rl_components"] =
 	//# sourceMappingURL=multiStepIndicator.js.map
 
 /***/ },
-/* 69 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var angular = __webpack_require__(1);
-	var ratingBarBackgrounds_service_1 = __webpack_require__(70);
-	var ratingBarClass_service_1 = __webpack_require__(71);
+	var ratingBarBackgrounds_service_1 = __webpack_require__(71);
+	var ratingBarClass_service_1 = __webpack_require__(72);
 	exports.moduleName = 'rl.ui.components.ratingBar';
 	exports.directiveName = 'rlRatingBar';
 	exports.controllerName = 'RatingBarController';
@@ -3212,7 +3291,7 @@ this["rl_components"] =
 	//# sourceMappingURL=ratingBar.js.map
 
 /***/ },
-/* 70 */
+/* 71 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3248,7 +3327,7 @@ this["rl_components"] =
 	//# sourceMappingURL=ratingBarBackgrounds.service.js.map
 
 /***/ },
-/* 71 */
+/* 72 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3278,7 +3357,7 @@ this["rl_components"] =
 	//# sourceMappingURL=ratingBarClass.service.js.map
 
 /***/ },
-/* 72 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3288,10 +3367,10 @@ this["rl_components"] =
 	var __observable = typescript_angular_utilities_1.services.observable;
 	var __promiseUtility = typescript_angular_utilities_1.services.promise;
 	var __numberUtility = typescript_angular_utilities_1.services.number;
-	var jquery_service_1 = __webpack_require__(62);
-	var grid = __webpack_require__(73);
+	var jquery_service_1 = __webpack_require__(63);
+	var grid = __webpack_require__(74);
 	exports.responsiveCardGrid = grid;
-	var card = __webpack_require__(78);
+	var card = __webpack_require__(79);
 	exports.responsiveCard = card;
 	exports.moduleName = 'rl.ui.components.responsiveCardGrid';
 	angular.module(exports.moduleName, [
@@ -3308,13 +3387,13 @@ this["rl_components"] =
 	//# sourceMappingURL=responsiveCardGrid.module.js.map
 
 /***/ },
-/* 73 */
+/* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var _ = __webpack_require__(10);
 	var typescript_angular_utilities_1 = __webpack_require__(4);
-	var breakpoints_module_1 = __webpack_require__(74);
+	var breakpoints_module_1 = __webpack_require__(75);
 	exports.directiveName = 'rlResponsiveCardGrid';
 	exports.controllerName = 'ResponsiveCardGridController';
 	var __observable = typescript_angular_utilities_1.services.observable;
@@ -3450,7 +3529,7 @@ this["rl_components"] =
 	//# sourceMappingURL=responsiveCardGrid.js.map
 
 /***/ },
-/* 74 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3459,12 +3538,12 @@ this["rl_components"] =
 	}
 	var angular = __webpack_require__(1);
 	var typescript_angular_utilities_1 = __webpack_require__(4);
-	var windowWrapper_service_1 = __webpack_require__(75);
-	var visibleBreakpoint_service_1 = __webpack_require__(76);
-	var breakpoints_service_1 = __webpack_require__(77);
+	var windowWrapper_service_1 = __webpack_require__(76);
+	var visibleBreakpoint_service_1 = __webpack_require__(77);
+	var breakpoints_service_1 = __webpack_require__(78);
 	__export(__webpack_require__(19));
-	__export(__webpack_require__(76));
 	__export(__webpack_require__(77));
+	__export(__webpack_require__(78));
 	exports.moduleName = 'rl.ui.services.breakpoints';
 	angular.module(exports.moduleName, [
 	    typescript_angular_utilities_1.services.observable.moduleName,
@@ -3476,12 +3555,12 @@ this["rl_components"] =
 	//# sourceMappingURL=breakpoints.module.js.map
 
 /***/ },
-/* 75 */
+/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var angular = __webpack_require__(1);
-	var $ = __webpack_require__(60);
+	var $ = __webpack_require__(61);
 	exports.moduleName = 'rl.ui.services.windowWrapper';
 	exports.serviceName = 'windowWrapper';
 	var WindowService = (function () {
@@ -3498,11 +3577,11 @@ this["rl_components"] =
 	//# sourceMappingURL=windowWrapper.service.js.map
 
 /***/ },
-/* 76 */
+/* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var $ = __webpack_require__(60);
+	var $ = __webpack_require__(61);
 	/*
 	 * Implementation also requires the following elements to be inserted on the page:
 	 *   <div class="device-xs visible-xs"></div>
@@ -3525,14 +3604,14 @@ this["rl_components"] =
 	//# sourceMappingURL=visibleBreakpoint.service.js.map
 
 /***/ },
-/* 77 */
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var _ = __webpack_require__(10);
 	var typescript_angular_utilities_1 = __webpack_require__(4);
-	var windowWrapper_service_1 = __webpack_require__(75);
-	var visibleBreakpoint_service_1 = __webpack_require__(76);
+	var windowWrapper_service_1 = __webpack_require__(76);
+	var visibleBreakpoint_service_1 = __webpack_require__(77);
 	var breakpoint_1 = __webpack_require__(19);
 	exports.breakpointServiceName = 'breakpoints';
 	var __observable = typescript_angular_utilities_1.services.observable;
@@ -3583,12 +3662,12 @@ this["rl_components"] =
 	//# sourceMappingURL=breakpoints.service.js.map
 
 /***/ },
-/* 78 */
+/* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var typescript_angular_utilities_1 = __webpack_require__(4);
-	var jquery_service_1 = __webpack_require__(62);
+	var jquery_service_1 = __webpack_require__(63);
 	exports.directiveName = 'rlResponsiveCard';
 	exports.controllerName = 'ResponsiveCardController';
 	var __parentChildBehavior = typescript_angular_utilities_1.services.parentChildBehavior;
@@ -3683,7 +3762,7 @@ this["rl_components"] =
 	//# sourceMappingURL=responsiveCard.js.map
 
 /***/ },
-/* 79 */
+/* 80 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3727,7 +3806,7 @@ this["rl_components"] =
 	//# sourceMappingURL=richTextEditor.js.map
 
 /***/ },
-/* 80 */
+/* 81 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// /// <reference path='../../../typings/signature_pad/signature_pad.d.ts' />
@@ -3766,7 +3845,7 @@ this["rl_components"] =
 	//# sourceMappingURL=signaturePad.js.map
 
 /***/ },
-/* 81 */
+/* 82 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3774,9 +3853,9 @@ this["rl_components"] =
 	var typescript_angular_utilities_1 = __webpack_require__(4);
 	var __observable = typescript_angular_utilities_1.services.observable;
 	var __parentChild = typescript_angular_utilities_1.services.parentChildBehavior;
-	var card = __webpack_require__(82);
+	var card = __webpack_require__(83);
 	exports.simpleCard = card;
-	var list = __webpack_require__(83);
+	var list = __webpack_require__(84);
 	exports.simpleCardList = list;
 	exports.moduleName = 'rl.ui.components.simpleCardList';
 	angular.module(exports.moduleName, [__observable.moduleName, __parentChild.moduleName])
@@ -3787,7 +3866,7 @@ this["rl_components"] =
 	//# sourceMappingURL=simpleCardList.module.js.map
 
 /***/ },
-/* 82 */
+/* 83 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// /// <reference path='../../../typings/jquery/jquery.d.ts' />
@@ -3904,7 +3983,7 @@ this["rl_components"] =
 	//# sourceMappingURL=simpleCard.js.map
 
 /***/ },
-/* 83 */
+/* 84 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3938,7 +4017,7 @@ this["rl_components"] =
 	//# sourceMappingURL=simpleCardList.js.map
 
 /***/ },
-/* 84 */
+/* 85 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// /// <reference path='../../../typings/bootstrap-touchspin/bootstrap-touchspin.d.ts' />
@@ -4030,7 +4109,7 @@ this["rl_components"] =
 	//# sourceMappingURL=spinner.js.map
 
 /***/ },
-/* 85 */
+/* 86 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4072,7 +4151,7 @@ this["rl_components"] =
 	//# sourceMappingURL=stringWithWatermark.js.map
 
 /***/ },
-/* 86 */
+/* 87 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4241,7 +4320,7 @@ this["rl_components"] =
 	//# sourceMappingURL=typeahead.js.map
 
 /***/ },
-/* 87 */
+/* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4310,22 +4389,22 @@ this["rl_components"] =
 	//# sourceMappingURL=userRating.js.map
 
 /***/ },
-/* 88 */
+/* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var angular = __webpack_require__(1);
-	var autosaveDialog = __webpack_require__(89);
+	var autosaveDialog = __webpack_require__(90);
 	exports.autosaveDialog = autosaveDialog;
-	var breakpoints = __webpack_require__(74);
+	var breakpoints = __webpack_require__(75);
 	exports.breakpoints = breakpoints;
-	var contentProvider = __webpack_require__(96);
+	var contentProvider = __webpack_require__(97);
 	exports.contentProvider = contentProvider;
-	var dialog = __webpack_require__(91);
+	var dialog = __webpack_require__(92);
 	exports.dialog = dialog;
-	var jquery = __webpack_require__(62);
+	var jquery = __webpack_require__(63);
 	exports.jquery = jquery;
-	var windowWrapper = __webpack_require__(75);
+	var windowWrapper = __webpack_require__(76);
 	exports.windowWrapper = windowWrapper;
 	exports.moduleName = 'rl.ui.services';
 	angular.module(exports.moduleName, [
@@ -4339,7 +4418,7 @@ this["rl_components"] =
 	//# sourceMappingURL=services.module.js.map
 
 /***/ },
-/* 89 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4347,10 +4426,10 @@ this["rl_components"] =
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
 	var angular = __webpack_require__(1);
-	var autosaveDialog_service_1 = __webpack_require__(90);
-	var autosaveDialog_controller_1 = __webpack_require__(95);
-	__export(__webpack_require__(90));
-	__export(__webpack_require__(95));
+	var autosaveDialog_service_1 = __webpack_require__(91);
+	var autosaveDialog_controller_1 = __webpack_require__(96);
+	__export(__webpack_require__(91));
+	__export(__webpack_require__(96));
 	exports.moduleName = 'rl.ui.services.autosaveDialog';
 	angular.module(exports.moduleName, [])
 	    .service(autosaveDialog_service_1.serviceName, autosaveDialog_service_1.AutosaveDialogService)
@@ -4358,13 +4437,13 @@ this["rl_components"] =
 	//# sourceMappingURL=autosaveDialog.module.js.map
 
 /***/ },
-/* 90 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var typescript_angular_utilities_1 = __webpack_require__(4);
-	var dialog_service_1 = __webpack_require__(91);
-	var autosaveDialog_controller_1 = __webpack_require__(95);
+	var dialog_service_1 = __webpack_require__(92);
+	var autosaveDialog_controller_1 = __webpack_require__(96);
 	exports.serviceName = 'autosaveDialog';
 	var __autosave = typescript_angular_utilities_1.services.autosave;
 	var AutosaveDialogService = (function () {
@@ -4407,12 +4486,12 @@ this["rl_components"] =
 	//# sourceMappingURL=autosaveDialog.service.js.map
 
 /***/ },
-/* 91 */
+/* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var ng = __webpack_require__(1);
-	var baseDialog_module_1 = __webpack_require__(92);
+	var baseDialog_module_1 = __webpack_require__(93);
 	exports.moduleName = 'rl.ui.services.dialog';
 	exports.serviceName = 'dialog';
 	var DialogService = (function () {
@@ -4448,7 +4527,7 @@ this["rl_components"] =
 	//# sourceMappingURL=dialog.service.js.map
 
 /***/ },
-/* 92 */
+/* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4456,10 +4535,10 @@ this["rl_components"] =
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
 	var angular = __webpack_require__(1);
-	var baseDialog_controller_1 = __webpack_require__(93);
-	var baseDialog_service_1 = __webpack_require__(94);
-	__export(__webpack_require__(93));
+	var baseDialog_controller_1 = __webpack_require__(94);
+	var baseDialog_service_1 = __webpack_require__(95);
 	__export(__webpack_require__(94));
+	__export(__webpack_require__(95));
 	exports.moduleName = 'rl.ui.services.dialog.baseDialog';
 	angular.module(exports.moduleName, [])
 	    .controller(baseDialog_controller_1.controllerName, baseDialog_controller_1.BaseDialogController)
@@ -4467,11 +4546,11 @@ this["rl_components"] =
 	//# sourceMappingURL=baseDialog.module.js.map
 
 /***/ },
-/* 93 */
+/* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var baseDialog_service_1 = __webpack_require__(94);
+	var baseDialog_service_1 = __webpack_require__(95);
 	exports.controllerName = 'BaseDialogController';
 	var BaseDialogController = (function () {
 	    function BaseDialogController($scope, $controller, baseDialog) {
@@ -4489,12 +4568,12 @@ this["rl_components"] =
 	//# sourceMappingURL=baseDialog.controller.js.map
 
 /***/ },
-/* 94 */
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var _ = __webpack_require__(10);
-	var baseDialog_controller_1 = __webpack_require__(93);
+	var baseDialog_controller_1 = __webpack_require__(94);
 	exports.serviceName = 'baseDialog';
 	var BaseDialogService = (function () {
 	    function BaseDialogService($modal, $rootScope) {
@@ -4536,7 +4615,7 @@ this["rl_components"] =
 	//# sourceMappingURL=baseDialog.service.js.map
 
 /***/ },
-/* 95 */
+/* 96 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4568,7 +4647,7 @@ this["rl_components"] =
 	//# sourceMappingURL=autosaveDialog.controller.js.map
 
 /***/ },
-/* 96 */
+/* 97 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../../typings/jquery/jquery.d.ts" />
