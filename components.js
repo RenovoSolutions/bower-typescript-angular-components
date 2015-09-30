@@ -2010,8 +2010,8 @@ this["rl_components"] =
 	var typescript_angular_utilities_1 = __webpack_require__(4);
 	var __boolean = typescript_angular_utilities_1.services.boolean;
 	exports.moduleName = 'rl.ui.components.cardContainer.selectionControl';
-	exports.directiveName = 'rlCardContainer';
-	exports.controllerName = 'CardContainerController';
+	exports.directiveName = 'rlSelectionControl';
+	exports.controllerName = 'SelectionControlController';
 	var SelectionControlController = (function () {
 	    function SelectionControlController($scope, $element, bool) {
 	        var _this = this;
